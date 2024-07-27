@@ -1,8 +1,26 @@
 import argparse
+import os
+import requests
+
+ollama_API_URL = "https://api.ollama.com/summarize"
+API_KEY = os.getenv("OLLAMA_API_KEY") 
 
 
-def summary_text():
-    pass
+def summary_text(text):
+    headers = {
+        'Authorization': f'Bearer {API_KEY}',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'model': 'qwen2-0.5b',
+        'text': text
+    }
+    
+    response = requests.post(ollama_API_URL, json=data, headers=headers)
+    if response.status_code == 200:
+        return response.json().get('summary', 'No summary found.')
+    else:
+        return f"Error: {response.status_code} - {response.text}"
 
 def main():
 
